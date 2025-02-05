@@ -1,15 +1,19 @@
 "use client";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function GoalForm() {
   const [goal, setGoal] = useState("");
+  const router = useRouter();
 
   const handleSave = () => {
+    if (goal.trim() === "") return;
     localStorage.setItem("goal", goal);
+    router.push("/tracker");
   };
 
   return (
-    <div className="p-4">
+    <div>
       <input
         type="text"
         value={goal}
