@@ -19,11 +19,34 @@ export default function Tracker() {
     }
   }, [router]);
 
+  const canToggleDay = (index: number, checkedDays: boolean[]) => {
+    const lastCheckedIndex = checkedDays.lastIndexOf(true);
+    return index === lastCheckedIndex + 1;
+  };
+
+  const isAlreadyCheckedToday = (): boolean => {
+    const today = new Date().toISOString().split("T")[0];
+    const lastCheckedDate = localStorage.getItem("lastCheckedDate");
+    return today === lastCheckedDate;
+  };
+
+  const saveCheckedDays = (checkedDays: boolean[]) => {
+    localStorage.setItem("checkedDays", JSON.stringify(checkedDays));
+    localStorage.setItem(
+      "lastCheckedDate",
+      new Date().toISOString().split("T")[0]
+    );
+  };
+
   const toggleDay = (index: number) => {
+    if (!canToggleDay(index, checkedDays)) return;
+    if (isAlreadyCheckedToday()) return;
+
     const newCheckedDays = [...checkedDays];
     newCheckedDays[index] = !newCheckedDays[index];
     setCheckedDays(newCheckedDays);
-    localStorage.setItem("checkedDays", JSON.stringify(newCheckedDays));
+
+    saveCheckedDays(newCheckedDays);
   };
 
   useEffect(() => {
@@ -35,7 +58,7 @@ export default function Tracker() {
     }
   }, []);
 
-  const checkDaysCount = checkedDays?.filter((item) => !!item).length;
+  const checkDaysCount = checkedDays.filter((item) => !!item).length;
 
   return (
     <main className="flex flex-col items-center justify-center h-screen p-4">
