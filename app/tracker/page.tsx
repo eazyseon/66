@@ -3,11 +3,12 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function Tracker() {
+  const router = useRouter();
+
   const [goal, setGoal] = useState("");
   const [checkedDays, setCheckedDays] = useState<boolean[]>(
     Array(66).fill(false)
   );
-  const router = useRouter();
 
   useEffect(() => {
     const savedGoal = localStorage.getItem("goal");
@@ -20,22 +21,28 @@ export default function Tracker() {
 
   const toggleDay = (index: number) => {
     const newCheckedDays = [...checkedDays];
-    console.log(newCheckedDays);
     newCheckedDays[index] = !newCheckedDays[index];
     setCheckedDays(newCheckedDays);
-    // localStorage.setItem("checkedDays", JSON.stringify(newCheckedDays));
+    localStorage.setItem("checkedDays", JSON.stringify(newCheckedDays));
   };
 
-  // useEffect(() => {
-  //   const savedCheckedDays = localStorage.getItem("checkedDays");
-  //   if (savedCheckedDays) {
-  //     setCheckedDays(JSON.parse(savedCheckedDays));
-  //   }
-  // }, []);
+  useEffect(() => {
+    const savedCheckedDays = localStorage.getItem("checkedDays");
+    if (savedCheckedDays) {
+      setCheckedDays(JSON.parse(savedCheckedDays));
+    } else {
+      setCheckedDays(Array(66).fill(false));
+    }
+  }, []);
+
+  const checkDaysCount = checkedDays?.filter((item) => !!item).length;
 
   return (
     <main className="flex flex-col items-center justify-center h-screen p-4">
       <h1 className="text-xl font-bold mb-4 text-green-500">목표: {goal}</h1>
+      <h2 className="text-sx font-bold mb-4 text-orange-400">
+        {checkDaysCount}번 해냄!
+      </h2>
       <div className="grid grid-cols-11 gap-2">
         {checkedDays.map((isChecked, i) => (
           <div
