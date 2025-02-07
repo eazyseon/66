@@ -8,7 +8,24 @@ export default function GoalForm() {
 
   const handleSave = () => {
     if (goal.trim() === "") return;
-    localStorage.setItem("goal", goal);
+
+    // 기존 목표 리스트 가져오기
+    const existingGoals = JSON.parse(localStorage.getItem("goals") || "[]");
+
+    // 새로운 목표 추가
+    const newGoal = {
+      id: Date.now().toString(),
+      title: goal,
+      checkedDays: Array(66).fill(false),
+      createdAt: new Date().toISOString().split("T")[0],
+    };
+
+    // 업데이트된 목표 리스트 저장
+    const updatedGoals = [...existingGoals, newGoal];
+    localStorage.setItem("goals", JSON.stringify(updatedGoals));
+
+    // 입력 필드 초기화 후 트래커 페이지 이동
+    setGoal("");
     router.push("/tracker");
   };
 

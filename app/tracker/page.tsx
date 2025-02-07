@@ -11,7 +11,7 @@ export default function Tracker() {
   );
 
   useEffect(() => {
-    const savedGoal = localStorage.getItem("goal");
+    const savedGoal = localStorage.getItem("goals");
     if (!savedGoal) {
       router.push("/");
     } else {
